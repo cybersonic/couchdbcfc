@@ -12,14 +12,14 @@ Installation
 All you need to do is instantiate CouchDB.cfc as a singleton, passing it the host, port and database you want to use:
 
 
- <cfscript>
-   application.couch = new CouchDB("localhost", "5984", "myDB");
- </cfscript>
+	<cfscript>
+	application.couch = new CouchDB("localhost", "5984", "myDB");
+	</cfscript>
 
 
 Then you can use the following methods:
 
- <cfscript>
+	<cfscript>
 	//Get a document 
 	myDoc = application.couch.getDocment("id");
 	
@@ -49,8 +49,7 @@ Then you can use the following methods:
 	
 	//delete all documents
 	application.couch.deleteAll();
-	
- </cfscript>	
+	</cfscript>
 
 
 
