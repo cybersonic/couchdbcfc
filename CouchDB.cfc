@@ -1,4 +1,4 @@
-component output="false"{
+component{
 	
 	
 	function init(host="localhost", port="", db){
