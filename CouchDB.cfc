@@ -2,7 +2,13 @@ component{
 	
 	
 	function init(host="localhost", port="", db){
+		
+		variables.host = host;
+		variables.port = port;
+		variables.db = db;
+		variables.mainurl = "http://#host#:#port#/";
 		variables.dbserver = "http://#host#:#port#/#db#";
+		
 		return this;
 	}
 	
@@ -10,7 +16,7 @@ component{
 	function relax(stArgs, aParams=[]){
 		var relax = new HTTP(argumentCollection=stArgs);
 			for(p in aParams){
-				myRes.addParam(p)
+				relax.addParam(p)
 			}
 		var result = relax.send().getPrefix().filecontent;
 		return DeSerializeJSON(result);
@@ -22,9 +28,6 @@ component{
 	
 	function getView(viewname, key=""){
 		var dburl = variables.dbserver & "/_design/#viewname#/_view/#viewname#";
-
-	
-		
 		if(Len(key)){
 			dburl = dburl & '?key="#key#"';
 		}
@@ -33,6 +36,15 @@ component{
 	
 	function getViewDesign(viewname){
 		return relax({url=variables.dbserver & "/_design/" & viewname});
+	}
+	function bulkDocs(Struct documents=[]){
+		var dburl = variables.dbserver & "/_bulk_docs";
+		
+			var relax = new HTTP(url=dburl, method="POST");
+				relax.addParam(type="header", name="Content-Type", value="application/json");
+				relax.addParam(type="BODY", value=SerializeJSON(documents), label="text/json");
+				var res1 = relax.send().getPrefix();
+			return DeSerializeJSON(result);
 	}
 	
 	function update(id, document){
@@ -62,12 +74,35 @@ component{
 		}
 	}
 	
+	function unsafe_instert(id, document){
+			var update = new HTTP(url="#variables.dbserver#/#arguments.id#", method="PUT");
+				update.addParam(type="BODY", value=SerializeJSON(document));
+			var insres = update.send().getPrefix();
+			return insres;
+	}
+	
+	
+	function deleteDatabase(){
+		var command = {
+			url=variables.dbserver,
+			method="DELETE"
+		};
+		return relax(command);
+	}
+	function createDatabase(){
+
+			var create = new HTTP(url="#variables.mainurl#/#variables.db#", method="PUT");
+				create.addParam(type="BODY", value=variables.db);
+			var rCreate = create.send().getPrefix();
+			return rCreate;
+	}
+	
 	function delete(id, rev){
 			var	command = {
 				url = variables.dbserver & "/" & arguments.id & "?rev=" & arguments.rev,
 				method = "delete"
 			};
-			relax(command);
+		return relax(command);
 	}
 	
 	function deleteAll(){
