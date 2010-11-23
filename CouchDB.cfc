@@ -1,7 +1,7 @@
 component{
 	
 	
-	function init(host="localhost", port="", db){
+	function init(host="localhost", port="5984", db){
 		
 		variables.host = host;
 		variables.port = port;
@@ -26,8 +26,13 @@ component{
 		return relax({url=variables.dbserver & "/" & id});
 	}
 	
-	function getView(viewname, key=""){
-		var dburl = variables.dbserver & "/_design/#viewname#/_view/#viewname#";
+	function getView(viewname, key="", designDocument=""){
+		
+		if(!Len(designDocument)){
+			designDocument = viewname;
+		}
+		
+		var dburl = variables.dbserver & "/_design/#designDocument#/_view/#viewname#";
 		if(Len(key)){
 			dburl = dburl & '?key="#key#"';
 		}
